@@ -1,5 +1,5 @@
-name: fit_track
-description: A Flutter fitness tracker app with workout logging.
+name: flutter_chat
+description: A modern chat messenger application.
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,15 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.1.2
+  cupertino_icons: ^1.0.6
+  provider: ^6.1.1
   intl: ^0.19.0
-  google_fonts: ^6.2.1
-  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^3.0.1
 
 flutter:
   uses-material-design: true
