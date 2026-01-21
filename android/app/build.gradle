@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nativevibe.weatherapp"
+    namespace = "com.nativevibe.coolest_app_ever"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nativevibe.weatherapp"
+        applicationId = "com.nativevibe.coolest_app_ever"
         minSdk = undefined
         targetSdk = undefined
         versionCode = 1
