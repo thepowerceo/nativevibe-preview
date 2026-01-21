@@ -74,7 +74,3 @@ workflows:
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
-
-    # Enable Stellar App Preview (browser-based testing)
-    app_preview:
-      app_file: build/app/outputs/flutter-apk/app-release.apk
