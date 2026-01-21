@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:fittrack/models/workout_model.dart';
+import 'package:fit_track/models/workout_model.dart';
 
 class WorkoutCard extends StatelessWidget {
   final Workout workout;
@@ -9,66 +9,47 @@ class WorkoutCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      child: InkWell(
-        onTap: () {
-          // Optional: Navigate to a detail screen
-        },
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Icon(
-                Icons.fitness_center,
-                color: theme.colorScheme.primary,
-                size: 32,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      workout.name,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      DateFormat.yMMMd().format(workout.date),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[400],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    workout.durationInMinutes.toString(),
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      color: theme.colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'mins',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: Colors.grey[400],
-                    ),
-                  ),
-                ],
-              ),
-            ],
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          tilePadding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+          title: Text(
+            workout.name,
+            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
+          subtitle: Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: Text(
+              DateFormat.yMMMMd().add_jm().format(workout.dateTime),
+              style: textTheme.bodyMedium?.copyWith(color: Colors.grey[400]),
+            ),
+          ),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+              child: Column(
+                children: workout.exercises.map((exercise) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(exercise.name, style: textTheme.bodyLarge),
+                        Text(
+                          '${exercise.sets}x${exercise.reps} @ ${exercise.weight}kg',
+                          style: textTheme.bodyMedium?.copyWith(color: colorScheme.primary),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
         ),
       ),
     );

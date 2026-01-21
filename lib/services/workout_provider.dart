@@ -1,47 +1,38 @@
-import 'dart:collection';
 import 'package:flutter/foundation.dart';
-import 'package:fittrack/models/workout_model.dart';
+import 'dart:collection';
+import 'package:fit_track/models/workout_model.dart';
 
 class WorkoutProvider extends ChangeNotifier {
   final List<Workout> _workouts = [
     Workout(
-      id: 'w1',
-      name: 'Morning Run',
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      durationInMinutes: 30,
+      name: 'Chest & Triceps Day',
+      dateTime: DateTime.now().subtract(const Duration(days: 2)),
+      exercises: [
+        Exercise(name: 'Bench Press', sets: 4, reps: 8, weight: 80),
+        Exercise(name: 'Incline Dumbbell Press', sets: 3, reps: 10, weight: 25),
+        Exercise(name: 'Tricep Pushdown', sets: 3, reps: 12, weight: 20),
+      ],
     ),
     Workout(
-      id: 'w2',
-      name: 'Weight Lifting',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      durationInMinutes: 60,
-    ),
-    Workout(
-      id: 'w3',
-      name: 'Yoga Session',
-      date: DateTime.now(),
-      durationInMinutes: 45,
+      name: 'Back & Biceps',
+      dateTime: DateTime.now().subtract(const Duration(days: 4)),
+      exercises: [
+        Exercise(name: 'Deadlift', sets: 3, reps: 5, weight: 120),
+        Exercise(name: 'Pull Ups', sets: 4, reps: 8, weight: 0),
+        Exercise(name: 'Bicep Curls', sets: 3, reps: 10, weight: 15),
+      ],
     ),
   ];
 
-  UnmodifiableListView<Workout> get workouts {
-    _workouts.sort((a, b) => b.date.compareTo(a.date));
-    return UnmodifiableListView(_workouts);
-  }
+  UnmodifiableListView<Workout> get workouts => UnmodifiableListView(_workouts);
 
-  void addWorkout(String name, int duration) {
-    final newWorkout = Workout(
-      id: DateTime.now().toIso8601String(),
-      name: name,
-      date: DateTime.now(),
-      durationInMinutes: duration,
-    );
-    _workouts.add(newWorkout);
+  void addWorkout(Workout workout) {
+    _workouts.insert(0, workout);
     notifyListeners();
   }
 
-  void removeWorkout(String id) {
-    _workouts.removeWhere((workout) => workout.id == id);
+  void removeWorkout(Workout workout) {
+    _workouts.remove(workout);
     notifyListeners();
   }
 }

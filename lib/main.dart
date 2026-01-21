@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fittrack/screens/home_screen.dart';
-import 'package:fittrack/services/workout_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:fit_track/services/workout_provider.dart';
+import 'package:fit_track/screens/home_screen.dart';
 
 void main() {
-  runApp(const FitTrackApp());
+  runApp(const MyApp());
 }
 
-class FitTrackApp extends StatelessWidget {
-  const FitTrackApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,20 +28,19 @@ class FitTrackApp extends StatelessWidget {
             seedColor: primaryColor,
             brightness: Brightness.dark,
             primary: primaryColor,
+            onPrimary: Colors.black,
           ),
           scaffoldBackgroundColor: const Color(0xFF121212),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF1C1C1E),
+          appBarTheme: AppBarTheme(
+            backgroundColor: const Color(0xFF1E1E1E),
             elevation: 0,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: primaryColor,
+            titleTextStyle: GoogleFonts.poppins(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
             ),
           ),
           cardTheme: CardTheme(
-            color: const Color(0xFF1C1C1E),
+            color: const Color(0xFF1E1E1E),
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
@@ -50,6 +50,7 @@ class FitTrackApp extends StatelessWidget {
             backgroundColor: primaryColor,
             foregroundColor: Colors.black,
           ),
+          textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
         ),
         home: const HomeScreen(),
       ),
