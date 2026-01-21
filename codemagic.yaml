@@ -37,8 +37,5 @@ workflows:
       - build/app/outputs/flutter-apk/app-release.apk
 
     publishing:
-      email:
-        recipients: []
-        notify:
-          success: false
-          failure: false
+      slack:
+        channel: null
