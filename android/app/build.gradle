@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nativevibe.skyline_messenger"
+    namespace = "com.nativevibe.zentask"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nativevibe.skyline_messenger"
+        applicationId = "com.nativevibe.zentask"
         minSdk = undefined
         targetSdk = undefined
         versionCode = 1

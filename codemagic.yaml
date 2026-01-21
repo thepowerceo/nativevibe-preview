@@ -1,5 +1,6 @@
 # Codemagic CI/CD configuration for NativeVibe Flutter apps
 # Generated automatically - do not edit manually
+# Optimized with aggressive caching for faster builds
 
 workflows:
   default:
@@ -13,6 +14,29 @@ workflows:
       flutter: 3.24.0
       xcode: latest
       cocoapods: default
+      vars:
+        # Enable Gradle build cache and parallel execution
+        GRADLE_OPTS: "-Dorg.gradle.caching=true -Dorg.gradle.parallel=true -Dorg.gradle.daemon=true -Dorg.gradle.jvmargs=-Xmx4g"
+        # Enable Flutter incremental builds
+        FLUTTER_BUILD_MODE: "release"
+
+    cache:
+      cache_paths:
+        # Flutter/Dart caches
+        - $HOME/.pub-cache
+        - $FCI_BUILD_DIR/.dart_tool
+        - $FCI_BUILD_DIR/.packages
+        
+        # Android caches - comprehensive Gradle caching
+        - $HOME/.gradle/caches
+        - $HOME/.gradle/wrapper
+        - $HOME/.android/build-cache
+        - $FCI_BUILD_DIR/android/.gradle
+        - $FCI_BUILD_DIR/build
+        - $FCI_BUILD_DIR/android/app/build/intermediates
+        - $FCI_BUILD_DIR/android/app/build/generated
+        
+
 
     triggering:
       events:
@@ -61,16 +85,55 @@ workflows:
               sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "1.9.24"/' android/settings.gradle
             fi
           fi
+
+      - name: Configure Gradle for caching
+        script: |
+          # Enable Gradle build cache
+          mkdir -p $HOME/.gradle
+          cat > $HOME/.gradle/gradle.properties << EOF
+          org.gradle.caching=true
+          org.gradle.parallel=true
+          org.gradle.daemon=true
+          org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8
+          org.gradle.configureondemand=true
+          android.enableBuildCache=true
+          android.useAndroidX=true
+          kotlin.incremental=true
+          kotlin.incremental.java=true
+          kotlin.caching.enabled=true
+          EOF
+          
+          # Configure local build cache directory
+          mkdir -p $HOME/.android/build-cache
+          echo "Gradle build cache configured"
           
       - name: Get Flutter packages
-        script: flutter pub get
+        script: |
+          echo "Fetching Flutter dependencies..."
+          flutter pub get
+          echo "Dependencies cached for future builds"
         
       - name: Run analyzer
         script: flutter analyze --no-fatal-infos
         ignore_failure: true
 
+      - name: Pre-warm Android build cache
+        script: |
+          echo "Checking for cached build artifacts..."
+          if [ -d "$HOME/.gradle/caches" ]; then
+            echo "Gradle cache found - build should be faster"
+            du -sh $HOME/.gradle/caches 2>/dev/null || true
+          fi
+          if [ -d "$HOME/.android/build-cache" ]; then
+            echo "Android build cache found"
+            du -sh $HOME/.android/build-cache 2>/dev/null || true
+          fi
+
       - name: Build Android APK
-        script: flutter build apk --release
+        script: |
+          echo "Building Android APK with caching enabled..."
+          flutter build apk --release
+          echo "Build complete - artifacts will be cached for next build"
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk

@@ -1,4 +1,4 @@
-package com.nativevibe.skyline_messenger
+package com.nativevibe.zentask
 
 import io.flutter.embedding.android.FlutterActivity
 
