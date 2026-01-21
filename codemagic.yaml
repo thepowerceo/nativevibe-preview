@@ -23,6 +23,33 @@ workflows:
           source: true
 
     scripts:
+      - name: Ensure Flutter project structure
+        script: |
+          # If android or ios folders are missing, recreate them with flutter create
+          if [ ! -d "android" ] || [ ! -d "ios" ]; then
+            echo "Native folders missing, regenerating with flutter create..."
+            # Save existing files
+            mkdir -p /tmp/saved_files
+            cp -r lib /tmp/saved_files/ 2>/dev/null || true
+            cp pubspec.yaml /tmp/saved_files/ 2>/dev/null || true
+            cp -r assets /tmp/saved_files/ 2>/dev/null || true
+            
+            # Get package name from pubspec
+            PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed 's/name: *//')
+            
+            # Go to parent and recreate project
+            cd ..
+            rm -rf clone
+            flutter create --org com.nativevibe "$PACKAGE_NAME"
+            mv "$PACKAGE_NAME" clone
+            cd clone
+            
+            # Restore saved files
+            cp -r /tmp/saved_files/lib/* lib/ 2>/dev/null || true
+            cp /tmp/saved_files/pubspec.yaml . 2>/dev/null || true
+            cp -r /tmp/saved_files/assets . 2>/dev/null || true
+          fi
+          
       - name: Get Flutter packages
         script: flutter pub get
         
