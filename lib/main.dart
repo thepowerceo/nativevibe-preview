@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:zentask/providers/todo_provider.dart';
-import 'package:zentask/screens/home_screen.dart';
+import 'package:vimeo_streamer/providers/video_provider.dart';
+import 'package:vimeo_streamer/screens/home_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Force landscape mode for tablet-like education experience
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+    DeviceOrientation.landscapeRight,
+  ]);
+  
   runApp(
     ChangeNotifierProvider(
-      create: (context) => TodoProvider(),
-      child: const ZenTaskApp(),
+      create: (_) => VideoProvider(),
+      child: const VimeoApp(),
     ),
   );
 }
 
-class ZenTaskApp extends StatelessWidget {
-  const ZenTaskApp({super.key});
+class VimeoApp extends StatelessWidget {
+  const VimeoApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = const Color(0xFF00D9FF);
+    final primaryCyan = Color(0xFF00D9FF);
 
     return MaterialApp(
-      title: 'ZenTask',
+      title: 'Vimeo Streamer',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          primary: primaryColor,
+          seedColor: primaryCyan,
+          primary: primaryCyan,
           brightness: Brightness.light,
         ),
         textTheme: GoogleFonts.interTextTheme(),
@@ -36,8 +44,8 @@ class ZenTaskApp extends StatelessWidget {
       darkTheme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryColor,
-          primary: primaryColor,
+          seedColor: primaryCyan,
+          primary: primaryCyan,
           brightness: Brightness.dark,
         ),
         textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),

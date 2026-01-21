@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nativevibe.zentask"
+    namespace = "com.nativevibe.vimeo_streamer"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nativevibe.zentask"
+        applicationId = "com.nativevibe.vimeo_streamer"
         minSdk = undefined
         targetSdk = undefined
         versionCode = 1

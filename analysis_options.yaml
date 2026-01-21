@@ -1,5 +1,4 @@
-include: package:flutter_lints/flutter.yaml
-
+include: package:flutter_lints/rules.yaml
 linter:
   rules:
     prefer_const_constructors: true

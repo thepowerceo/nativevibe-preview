@@ -1,4 +1,4 @@
-package com.nativevibe.zentask
+package com.nativevibe.vimeo_streamer
 
 import io.flutter.embedding.android.FlutterActivity
 

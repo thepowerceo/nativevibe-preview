@@ -1,22 +1,17 @@
-name: zentask
-description: A modern Todo application.
+name: vimeo_streamer
+description: A Flutter video lesson app.
 version: 1.0.0+1
-
 environment:
   sdk: '>=3.0.0 <4.0.0'
-
 dependencies:
-  flutter: 
+  flutter:
     sdk: flutter
   provider: ^6.1.1
-  intl: ^0.19.0
-  google_fonts: ^6.2.1
-  # uuid: ^4.3.3 # Removed uuid as it's not DartPad compatible
-
+  http: ^1.1.0
+  video_player: ^2.8.1
+  chewie: ^1.7.1
+  google_fonts: ^6.1.0
 dev_dependencies:
-  flutter_test: 
+  flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
-
-flutter:
-  uses-material-design: true
