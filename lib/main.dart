@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'services/workout_provider.dart';
-import 'screens/home_screen.dart';
+
+import 'package:vibrant_fit/services/workout_provider.dart';
+import 'package:vibrant_fit/screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const VibrantFitApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class VibrantFitApp extends StatelessWidget {
+  const VibrantFitApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,44 +18,49 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => WorkoutProvider(),
       child: MaterialApp(
-        title: 'Fitness Flow',
+        title: 'VibrantFit',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor: primaryColor,
             brightness: Brightness.light,
           ),
-          useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFFF5F5F5),
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
+            centerTitle: false,
             elevation: 0,
-            scrolledUnderElevation: 0,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Color(0xFF212121),
-            ),
+          ),
+          cardTheme: CardThemeData(
+             elevation: 1,
+             shape: RoundedRectangleBorder(
+               borderRadius: BorderRadius.circular(16.0),
+             ),
+          ),
+          floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            shape: CircleBorder(),
           ),
         ),
         darkTheme: ThemeData(
+          useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
             seedColor: primaryColor,
             brightness: Brightness.dark,
+            background: const Color(0xFF121212),
           ),
-          useMaterial3: true,
-          scaffoldBackgroundColor: const Color(0xFF121212),
-           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
+          appBarTheme: const AppBarTheme(
+            centerTitle: false,
             elevation: 0,
-            scrolledUnderElevation: 0,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Colors.white,
+            backgroundColor: Color(0xFF121212),
+          ),
+          cardTheme: CardThemeData(
+            elevation: 1,
+            color: const Color(0xFF1E1E1E),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16.0),
             ),
+          ),
+           floatingActionButtonTheme: const FloatingActionButtonThemeData(
+            shape: CircleBorder(),
           ),
         ),
         themeMode: ThemeMode.system,

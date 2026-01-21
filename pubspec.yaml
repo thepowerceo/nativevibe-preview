@@ -1,23 +1,20 @@
-name: fitness_flow
-description: A modern fitness tracker app for logging workouts.
+name: vibrant_fit
+description: A vibrant fitness tracker app for logging workouts.
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^6.1.2
-  intl: ^0.19.0
-  cupertino_icons: ^1.0.6
+  provider: ^6.1.1
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
