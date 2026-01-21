@@ -1,19 +1,49 @@
+import 'package:fittrack/providers/workout_provider.dart';
+import 'package:fittrack/screens/workout_details_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'package:vibrant_fit/services/workout_provider.dart';
-import 'package:vibrant_fit/widgets/workout_card.dart';
-import 'package:vibrant_fit/widgets/add_workout_dialog.dart';
-import 'package:vibrant_fit/models/workout_model.dart';
-import 'package:vibrant_fit/screens/workout_detail_screen.dart';
-
+/// The main screen displaying a list of logged workouts.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   void _showAddWorkoutDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
-      builder: (ctx) => const AddWorkoutDialog(),
+      builder: (ctx) => AlertDialog(
+        title: const Text('New Workout'),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: nameController,
+            autofocus: true,
+            decoration: const InputDecoration(labelText: 'Workout Name'),
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? 'Please enter a name.'
+                : null,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (formKey.currentState!.validate()) {
+                Provider.of<WorkoutProvider>(context, listen: false)
+                    .addWorkout(nameController.text);
+                Navigator.of(ctx).pop();
+              }
+            },
+            child: const Text('Add'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -21,81 +51,41 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'VibrantFit',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.background,
+        title: const Text('Workout History'),
       ),
       body: Consumer<WorkoutProvider>(
-        builder: (context, workoutProvider, child) {
-          final workouts = workoutProvider.workouts;
-          return AnimatedSwitcher(
-            duration: const Duration(milliseconds: 500),
-            child: workouts.isEmpty
-                ? _buildEmptyState(context)
-                : _buildWorkoutList(context, workouts),
+        builder: (context, provider, child) {
+          if (provider.workouts.isEmpty) {
+            return const Center(child: Text('No workouts logged yet.'));
+          }
+          return ListView.builder(
+            padding: const EdgeInsets.all(8.0),
+            itemCount: provider.workouts.length,
+            itemBuilder: (ctx, i) {
+              final workout = provider.workouts[i];
+              return Card(
+                margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
+                child: ListTile(
+                  title: Text(workout.name,
+                      style: Theme.of(context).textTheme.titleMedium),
+                  subtitle: Text(DateFormat.yMMMd().add_jm().format(workout.date)),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => WorkoutDetailsScreen(workoutId: workout.id),
+                    ),
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddWorkoutDialog(context),
+        tooltip: 'Add Workout',
         child: const Icon(Icons.add),
       ),
-    );
-  }
-
-  Widget _buildEmptyState(BuildContext context) {
-    return Center(
-      key: const ValueKey('empty_state'),
-      child: Padding(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.fitness_center_rounded,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'No Workouts Logged',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Tap the \'+\' button to add your first workout!',
-              style: Theme.of(context).textTheme.bodyLarge,
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildWorkoutList(BuildContext context, List<Workout> workouts) {
-    return ListView.builder(
-      key: const ValueKey('workout_list'),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      itemCount: workouts.length,
-      itemBuilder: (context, index) {
-        final workout = workouts[index];
-        return WorkoutCard(
-          workout: workout,
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctx) => WorkoutDetailScreen(workout: workout),
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }
