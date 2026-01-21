@@ -1,49 +1,16 @@
-import 'package:fittrack/providers/workout_provider.dart';
-import 'package:fittrack/screens/workout_details_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:fittrack/providers/workout_provider.dart';
+import 'package:fittrack/screens/add_workout_screen.dart';
+import 'package:fittrack/widgets/workout_card.dart';
 
-/// The main screen displaying a list of logged workouts.
+/// The main screen of the app, displaying the list of logged workouts.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  void _showAddWorkoutDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final formKey = GlobalKey<FormState>();
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('New Workout'),
-        content: Form(
-          key: formKey,
-          child: TextFormField(
-            controller: nameController,
-            autofocus: true,
-            decoration: const InputDecoration(labelText: 'Workout Name'),
-            validator: (value) => (value == null || value.trim().isEmpty)
-                ? 'Please enter a name.'
-                : null,
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (formKey.currentState!.validate()) {
-                Provider.of<WorkoutProvider>(context, listen: false)
-                    .addWorkout(nameController.text);
-                Navigator.of(ctx).pop();
-              }
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
+  void _navigateToAddWorkout(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AddWorkoutScreen()),
     );
   }
 
@@ -54,35 +21,28 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Workout History'),
       ),
       body: Consumer<WorkoutProvider>(
-        builder: (context, provider, child) {
-          if (provider.workouts.isEmpty) {
-            return const Center(child: Text('No workouts logged yet.'));
+        builder: (context, workoutProvider, child) {
+          final workouts = workoutProvider.workouts;
+          if (workouts.isEmpty) {
+            return Center(
+              child: Text(
+                'No workouts logged yet.\nTap the + button to add one!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            );
           }
           return ListView.builder(
-            padding: const EdgeInsets.all(8.0),
-            itemCount: provider.workouts.length,
-            itemBuilder: (ctx, i) {
-              final workout = provider.workouts[i];
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0),
-                child: ListTile(
-                  title: Text(workout.name,
-                      style: Theme.of(context).textTheme.titleMedium),
-                  subtitle: Text(DateFormat.yMMMd().add_jm().format(workout.date)),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => WorkoutDetailsScreen(workoutId: workout.id),
-                    ),
-                  ),
-                ),
-              );
+            padding: const EdgeInsets.all(16.0),
+            itemCount: workouts.length,
+            itemBuilder: (context, index) {
+              return WorkoutCard(workout: workouts[index]);
             },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddWorkoutDialog(context),
+        onPressed: () => _navigateToAddWorkout(context),
         tooltip: 'Add Workout',
         child: const Icon(Icons.add),
       ),

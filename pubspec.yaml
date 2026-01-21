@@ -1,5 +1,5 @@
 name: fittrack
-description: A fitness tracker app to log workouts.
+description: A modern and clean fitness tracker to log your workouts and track your progress.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -9,10 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.2
   provider: ^6.1.1
-  intl: ^0.19.0
   google_fonts: ^6.1.0
-  cupertino_icons: ^1.0.6
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
