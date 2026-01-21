@@ -1,32 +1,27 @@
+import 'dart:collection';
 import 'package:flutter/foundation.dart';
 import 'package:fittrack/models/exercise.dart';
 import 'package:fittrack/models/workout.dart';
-import 'dart:collection';
 
-/// Manages the state of workouts in the application.
-///
-/// This class acts as the single source of truth for workout data.
-/// It follows an 'offline-first' approach by holding data in memory.
+/// Manages the state of the user's workouts.
 class WorkoutProvider with ChangeNotifier {
   final List<Workout> _workouts = [
     Workout(
       id: 'w1',
-      name: 'Morning Chest & Triceps',
+      name: 'Morning Run',
       date: DateTime.now().subtract(const Duration(days: 2)),
-      exercises: [
-        Exercise(id: 'e1', name: 'Bench Press', sets: 4, reps: 8, weight: 80),
-        Exercise(id: 'e2', name: 'Incline Dumbbell Press', sets: 3, reps: 10, weight: 25),
-        Exercise(id: 'e3', name: 'Tricep Dips', sets: 3, reps: 12, weight: 0),
-      ],
+      durationInMinutes: 30,
+      exercises: [],
     ),
     Workout(
       id: 'w2',
-      name: 'Leg Day Annihilation',
-      date: DateTime.now().subtract(const Duration(days: 4)),
+      name: 'Full Body Strength',
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      durationInMinutes: 65,
       exercises: [
-        Exercise(id: 'e4', name: 'Barbell Squats', sets: 5, reps: 5, weight: 100),
-        Exercise(id: 'e5', name: 'Leg Press', sets: 4, reps: 10, weight: 150),
-        Exercise(id: 'e6', name: 'Calf Raises', sets: 4, reps: 15, weight: 50),
+        Exercise(id: 'e1', name: 'Squats', sets: 3, reps: 10, weightInKg: 60),
+        Exercise(id: 'e2', name: 'Bench Press', sets: 3, reps: 8, weightInKg: 50),
+        Exercise(id: 'e3', name: 'Deadlift', sets: 1, reps: 5, weightInKg: 100),
       ],
     ),
   ];
@@ -37,9 +32,14 @@ class WorkoutProvider with ChangeNotifier {
     return UnmodifiableListView(_workouts);
   }
 
-  /// Adds a new workout to the list and notifies listeners.
+  /// Adds a new workout to the list.
   void addWorkout(Workout workout) {
     _workouts.add(workout);
     notifyListeners();
+  }
+
+  /// Finds a workout by its ID.
+  Workout findById(String id) {
+    return _workouts.firstWhere((w) => w.id == id);
   }
 }

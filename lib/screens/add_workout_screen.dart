@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fittrack/models/exercise.dart';
 import 'package:fittrack/models/workout.dart';
 import 'package:fittrack/providers/workout_provider.dart';
 
-/// A screen for logging a new workout.
+/// A screen for adding a new workout entry.
 class AddWorkoutScreen extends StatefulWidget {
+  /// Creates an AddWorkoutScreen.
   const AddWorkoutScreen({super.key});
 
   @override
@@ -14,42 +14,31 @@ class AddWorkoutScreen extends StatefulWidget {
 
 class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _workoutNameController = TextEditingController();
-  
-  // For simplicity, we'll add one hardcoded exercise type
-  final _exerciseName = 'New Exercise';
-  final _setsController = TextEditingController();
-  final _repsController = TextEditingController();
-  final _weightController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _durationController = TextEditingController();
 
   @override
   void dispose() {
-    _workoutNameController.dispose();
-    _setsController.dispose();
-    _repsController.dispose();
-    _weightController.dispose();
+    _nameController.dispose();
+    _durationController.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final newExercise = Exercise(
-        id: DateTime.now().toIso8601String(),
-        name: _exerciseName, // Simplified
-        sets: int.parse(_setsController.text),
-        reps: int.parse(_repsController.text),
-        weight: double.parse(_weightController.text),
-      );
-
+  void _saveWorkout() {
+    if (_formKey.currentState?.validate() ?? false) {
       final newWorkout = Workout(
         id: DateTime.now().toIso8601String(),
-        name: _workoutNameController.text,
+        name: _nameController.text,
+        durationInMinutes: int.parse(_durationController.text),
         date: DateTime.now(),
-        exercises: [newExercise], // Simplified to one exercise
+        exercises: [], // Simplified for this example
       );
 
-      Provider.of<WorkoutProvider>(context, listen: false).addWorkout(newWorkout);
-      Navigator.of(context).pop();
+      context.read<WorkoutProvider>().addWorkout(newWorkout);
+
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -59,48 +48,42 @@ class _AddWorkoutScreenState extends State<AddWorkoutScreen> {
       appBar: AppBar(
         title: const Text('Log New Workout'),
       ),
-      body: SingleChildScrollView(
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text('Workout Details', style: Theme.of(context).textTheme.titleLarge),
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Workout Name (e.g., Chest Day)',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) =>
+                    value!.isEmpty ? 'Please enter a name' : null,
+              ),
               const SizedBox(height: 16),
               TextFormField(
-                controller: _workoutNameController,
-                decoration: const InputDecoration(labelText: 'Workout Name (e.g., Back & Biceps)'),
-                validator: (value) => value!.isEmpty ? 'Please enter a name' : null,
-              ),
-              const SizedBox(height: 24),
-              Text('Add an Exercise', style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _setsController,
-                decoration: const InputDecoration(labelText: 'Sets'),
+                controller: _durationController,
+                decoration: const InputDecoration(
+                  labelText: 'Duration (in minutes)',
+                  border: OutlineInputBorder(),
+                ),
                 keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Enter sets' : null,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Please enter a duration';
+                  if (int.tryParse(value) == null) return 'Enter a valid number';
+                  return null;
+                },
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _repsController,
-                decoration: const InputDecoration(labelText: 'Reps'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Enter reps' : null,
-              ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _weightController,
-                decoration: const InputDecoration(labelText: 'Weight (kg)'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                validator: (value) => value!.isEmpty ? 'Enter weight' : null,
-              ),
-              const SizedBox(height: 32),
+              const Spacer(),
               ElevatedButton(
-                onPressed: _submitForm,
+                onPressed: _saveWorkout,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 child: const Text('Save Workout'),
               ),
