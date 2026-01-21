@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_chat_app/screens/home_screen.dart';
-import 'package:flutter_chat_app/services/chat_service.dart';
+import 'services/workout_provider.dart';
+import 'screens/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -15,26 +15,49 @@ class MyApp extends StatelessWidget {
     const primaryColor = Color(0xFF00D9FF);
 
     return ChangeNotifierProvider(
-      create: (context) => ChatService(),
+      create: (context) => WorkoutProvider(),
       child: MaterialApp(
-        title: 'Flutter Chat',
+        title: 'Fitness Flow',
         debugShowCheckedModeBanner: false,
-        themeMode: ThemeMode.dark, // Default to dark theme
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: primaryColor,
             brightness: Brightness.light,
           ),
           useMaterial3: true,
+          scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color(0xFF212121),
+            ),
+          ),
         ),
         darkTheme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: primaryColor,
             brightness: Brightness.dark,
-            primary: primaryColor,
           ),
           useMaterial3: true,
+          scaffoldBackgroundColor: const Color(0xFF121212),
+           appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: true,
+            titleTextStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
         ),
+        themeMode: ThemeMode.system,
         home: const HomeScreen(),
       ),
     );
