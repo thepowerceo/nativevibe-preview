@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fittrack/providers/workout_provider.dart';
-import 'package:fittrack/screens/home_screen.dart';
-import 'package:fittrack/utils/app_theme.dart';
+import 'package:relish_style_booking/providers/booking_provider.dart';
+import 'package:relish_style_booking/screens/home_screen.dart';
+import 'package:relish_style_booking/utils/app_theme.dart';
 
 void main() {
-  runApp(const FitTrackApp());
+  runApp(const MyApp());
 }
 
-/// The root widget of the FitTrack application.
-class FitTrackApp extends StatelessWidget {
-  /// Creates the FitTrackApp widget.
-  const FitTrackApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => WorkoutProvider(),
+      create: (context) => BookingProvider(),
       child: MaterialApp(
-        title: 'FitTrack',
+        title: 'Relish Style',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,

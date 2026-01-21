@@ -1,37 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Defines the application's theme constants.
+/// Defines the application's color scheme and themes.
 class AppTheme {
-  // Private constructor to prevent instantiation.
-  AppTheme._();
-
   /// The primary color for the application theme.
   static const Color _primaryColor = Color(0xFF00D9FF);
 
-  /// The light theme data.
+  /// The light theme configuration for the application.
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
+    brightness: Brightness.light,
     colorScheme: ColorScheme.fromSeed(
       seedColor: _primaryColor,
       brightness: Brightness.light,
     ),
-    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
+    textTheme: GoogleFonts.poppinsTextTheme(
+      ThemeData.light().textTheme,
+    ),
     appBarTheme: AppBarTheme(
-      titleTextStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 20),
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
     ),
   );
 
-  /// The dark theme data.
+  /// The dark theme configuration for the application.
   static final ThemeData darkTheme = ThemeData(
     useMaterial3: true,
+    brightness: Brightness.dark,
     colorScheme: ColorScheme.fromSeed(
       seedColor: _primaryColor,
       brightness: Brightness.dark,
     ),
-    textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+    textTheme: GoogleFonts.poppinsTextTheme(
+      ThemeData.dark().textTheme,
+    ),
     appBarTheme: AppBarTheme(
-      titleTextStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 20),
+      centerTitle: false,
+      titleTextStyle: GoogleFonts.poppins(
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
     ),
   );
 }

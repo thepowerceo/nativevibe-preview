@@ -1,49 +1,95 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fittrack/providers/workout_provider.dart';
-import 'package:fittrack/screens/add_workout_screen.dart';
-import 'package:fittrack/widgets/workout_list_item.dart';
+import 'package:relish_style_booking/models/booking.dart';
+import 'package:relish_style_booking/providers/booking_provider.dart';
+import 'package:relish_style_booking/screens/booking_screen.dart';
+import 'package:relish_style_booking/widgets/booking_list_item.dart';
+import 'package:relish_style_booking/widgets/service_card.dart';
 
-/// The main screen displaying the list of logged workouts.
 class HomeScreen extends StatelessWidget {
-  /// Creates a HomeScreen.
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bookingProvider = context.watch<BookingProvider>();
+    final services = bookingProvider.services;
+    final bookings = bookingProvider.bookings;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Workout Log'),
-        centerTitle: true,
+        title: const Text('Relish Style'),
       ),
-      body: Consumer<WorkoutProvider>(
-        builder: (context, workoutProvider, child) {
-          final workouts = workoutProvider.workouts;
-          if (workouts.isEmpty) {
-            return child!;
-          } else {
-            return ListView.builder(
-              padding: const EdgeInsets.all(8.0),
-              itemCount: workouts.length,
-              itemBuilder: (ctx, i) => WorkoutListItem(workout: workouts[i]),
-            );
-          }
-        },
+      body: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          _buildSectionHeader(context, 'Our Services'),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 180,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: services.length,
+              separatorBuilder: (context, index) => const SizedBox(width: 12),
+              itemBuilder: (context, index) {
+                final service = services[index];
+                return ServiceCard(
+                  service: service,
+                  onTap: () => _navigateToBooking(context, service),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 24),
+          _buildSectionHeader(context, 'My Bookings'),
+          const SizedBox(height: 12),
+          _buildBookingsList(context, bookings),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+    );
+  }
+
+  Widget _buildBookingsList(BuildContext context, List<Booking> bookings) {
+    if (bookings.isEmpty) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.5),
+          borderRadius: BorderRadius.circular(12),
+        ),
         child: const Center(
           child: Text(
-            'No workouts logged yet.\nTap + to add one!',
+            'You have no upcoming bookings.\nSelect a service to get started!',
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18),
+            style: TextStyle(fontSize: 16),
           ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (ctx) => const AddWorkoutScreen()),
-          );
-        },
-        child: const Icon(Icons.add),
+      );
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: bookings.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 10),
+      itemBuilder: (context, index) {
+        return BookingListItem(booking: bookings[index]);
+      },
+    );
+  }
+
+  void _navigateToBooking(BuildContext context, service) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BookingScreen(service: service),
       ),
     );
   }
