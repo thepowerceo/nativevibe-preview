@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vimeo_streamer/providers/video_provider.dart';
-import 'package:vimeo_streamer/widgets/video_player_view.dart';
-import 'package:vimeo_streamer/widgets/lesson_list_item.dart';
+import 'package:weather_app/models/weather.dart';
+import 'package:weather_app/providers/weather_provider.dart';
+import 'package:weather_app/widgets/current_weather_widget.dart';
+import 'package:weather_app/widgets/hourly_forecast_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,106 +13,177 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  int _selectedIndex = 0; // For bottom navigation
+
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => 
-      Provider.of<VideoProvider>(context, listen: false).loadLessons()
-    );
+    // Fetch weather for a default location on startup
+    Provider.of<WeatherProvider>(context, listen: false).fetchWeather('London');
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _searchLocation() {
+    final location = _searchController.text;
+    if (location.isNotEmpty) {
+      Provider.of<WeatherProvider>(context, listen: false).fetchWeather(location);
+      _searchController.clear();
+      // Optionally close the keyboard
+      FocusScope.of(context).unfocus();
+    }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    // Handle navigation if needed, for now just for demo
+    if (index == 1) {
+      Provider.of<WeatherProvider>(context, listen: false).toggleTheme();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Consumer<VideoProvider>(builder: (context, provider, child) {
-        if (provider.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (provider.lessons.isEmpty) {
-          return const Center(child: Text('No lessons found. Check API Token.'));
-        }
-
-        return Row(
-          children: [
-            // Main Video Player Area
-            Expanded(
-              flex: 7,
-              child: Container(
-                color: Colors.black,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: VideoPlayerView(
-                        key: ValueKey(provider.selectedLesson?.id),
-                        lesson: provider.selectedLesson!,
-                      ),
-                    ),
-                    _buildVideoDetails(provider.selectedLesson!),
-                  ],
-                ),
-              ),
+      appBar: AppBar(
+        title: const Text('WeatherApp'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: _LocationSearchDelegate(_searchController, _searchLocation),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(
+              Provider.of<WeatherProvider>(context).isDarkMode
+                  ? Icons.light_mode_outlined
+                  : Icons.dark_mode_outlined,
             ),
-            // Playlist Sidebar
-            Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(left: BorderSide(color: Colors.grey.withOpacity(0.2))),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Text(
-                        'Course Content',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: provider.lessons.length,
-                        itemBuilder: (context, index) {
-                          final lesson = provider.lessons[index];
-                          return LessonListItem(
-                            lesson: lesson,
-                            isSelected: provider.selectedLesson?.id == lesson.id,
-                            onTap: () => provider.selectLesson(lesson),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
-      }),
+            onPressed: () {
+              Provider.of<WeatherProvider>(context, listen: false).toggleTheme();
+            },
+          ),
+        ],
+      ),
+      body: Consumer<WeatherProvider>(
+        builder: (context, weatherProvider, child) {
+          if (weatherProvider.currentWeather == null) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          return _buildBody(weatherProvider.currentWeather!); 
+        },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        onTap: _onItemTapped,
+      ),
     );
   }
 
-  Widget _buildVideoDetails(dynamic lesson) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      color: Theme.of(context).cardColor,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            lesson.title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+  Widget _buildBody(WeatherData weatherData) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CurrentWeatherWidget(weatherData: weatherData),
+            const SizedBox(height: 20),
+            HourlyForecastWidget(hourlyForecast: weatherData.hourlyForecast),
+            // Add more widgets for daily forecast, etc.
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _LocationSearchDelegate extends SearchDelegate<String> {
+  final TextEditingController controller;
+  final VoidCallback onSearch;
+
+  _LocationSearchDelegate(this.controller, this.onSearch);
+
+  @override
+  String get searchFieldLabel => 'Enter city name';
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+          controller.clear();
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, '');
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    // Trigger search when results are shown
+    if (query.isNotEmpty) {
+      controller.text = query;
+      onSearch();
+    }
+    return Container(); // No specific UI for results here, handled by onSearch
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    // You can implement location suggestions here if you have an API for it.
+    // For now, we'll just use the text field.
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: 'Enter city name',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
           ),
-          const SizedBox(height: 4),
-          Text(
-            lesson.description,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
+        ),
+        onSubmitted: (value) {
+          query = value;
+          controller.text = value;
+          onSearch();
+          close(context, value); // Close search after submitting
+        },
       ),
     );
   }

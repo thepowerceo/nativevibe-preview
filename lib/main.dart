@@ -1,56 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:vimeo_streamer/providers/video_provider.dart';
-import 'package:vimeo_streamer/screens/home_screen.dart';
+import 'package:weather_app/providers/weather_provider.dart';
+import 'package:weather_app/screens/home_screen.dart';
+import 'package:weather_app/theme/app_theme.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Force landscape mode for tablet-like education experience
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
-  ]);
-  
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => VideoProvider(),
-      child: const VimeoApp(),
-    ),
-  );
+  runApp(const MyApp());
 }
 
-class VimeoApp extends StatelessWidget {
-  const VimeoApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final primaryCyan = Color(0xFF00D9FF);
-
-    return MaterialApp(
-      title: 'Vimeo Streamer',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryCyan,
-          primary: primaryCyan,
-          brightness: Brightness.light,
-        ),
-        textTheme: GoogleFonts.interTextTheme(),
+    return ChangeNotifierProvider(
+      create: (_) => WeatherProvider(),
+      child: Consumer<WeatherProvider>(
+        builder: (context, weatherProvider, child) {
+          return MaterialApp(
+            title: 'WeatherApp',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: weatherProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            home: const HomeScreen(),
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: primaryCyan,
-          primary: primaryCyan,
-          brightness: Brightness.dark,
-        ),
-        textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      ),
-      home: const HomeScreen(),
     );
   }
 }

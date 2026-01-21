@@ -1,4 +1,4 @@
-package com.nativevibe.vimeo_streamer
+package com.nativevibe.weatherapp
 
 import io.flutter.embedding.android.FlutterActivity
 

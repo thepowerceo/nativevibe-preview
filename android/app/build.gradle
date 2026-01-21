@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nativevibe.vimeo_streamer"
+    namespace = "com.nativevibe.weatherapp"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nativevibe.vimeo_streamer"
+        applicationId = "com.nativevibe.weatherapp"
         minSdk = undefined
         targetSdk = undefined
         versionCode = 1
