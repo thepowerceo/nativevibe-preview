@@ -1,62 +1,153 @@
 analyzer:
-  errors:
-    todo: ignore
-  exclude:
-    - "**/*.g.dart"
+  exclude: 
+    - lib/**.g.dart
+  plugins: 
+    - flutter_lints
 
 linter:
   rules:
-    - always_declare_return_types
     - always_specify_types
-    - cancel_subscriptions
+    - annotate_overrides
+    - avoid_empty_else
+    - avoid_init_to_null
+    - avoid_null_checks_as_bool_literals
+    - avoid_positional_argument_rewards
+    - avoid_private_typedef_in_public_api
+    - avoid_redundant_argument_values
+    - avoid_relative_lib_imports
+    - avoid_return_types_on_setters
+    - avoid_returning_null_for_weak_references
+    - avoid_setters_without_getters
+    - avoid_shadowing_type_parameters
+    - avoid_slow_async_loops
+    - avoid_types_as_parameter_names
+    - avoid_types_on_closure_parameters
+    - avoid_unnecessary_containers
+    - avoid_unused_constructor_parameters
+    - avoid_useless_interpolation
+    - avoid_weak_references_with_leaf_node
+    - await_only_futures
+    - camel_case_types
+    - cast_nullable_to_non_nullable
     - close_sinks
-    - comment_documentation
-    - diagnostic_describe_utils
+    - comment_references
+    - constant_identifier_names
+    - control_flow_in_finally
+    - curly_braces_in_flow_control_structures
+    - diagnostic_describe_ 100, '  '
     - empty_statements
     - exhaustive_cases
     - file_names
-    - hash_and_equals
+    - final_classes
+    - final_field_types
+    - fixed_value_in_range
+    - flutter_style_todos
     - implementation_imports
-    - iterable_contains_unrelated_type
-    - literal_only_in_collection_types
-    - missing_final_in_for_each
-    - no_adjacent_strings
-    - no_duplicate_case_values
+    - implicit_call_to_static_member
+    - implicit_dynamic_data_type
+    - implicit_dynamic_field
+    - implicit_dynamic_function
+    - implicit_dynamic_parameter
+    - implicit_dynamic_type
+    - inconvertible_types
+    - iterable_contains_every
+    - iterable_contains_all
+    - library_prefixes
+    - list_element_type_annotations
+    - literal_only_boolean_expressions
+    - missing_enum_value_in_switch
+    - missing_return
+    - mixed_interfaces
+    - named_alignment
+    - no_leading_underscores_for_extension_members
     - no_leading_underscores_for_library_prefixes
-    - no_logic_in_create_state
-    - no_runtimeType_toString
-    - no_self_assignment_in_operator
-    - no_silent_typo
-    - no_use_unsafe_html
-    - null_aware_before_operator
+    - no_self_assignments
+    - no_sync_await
+    - non_nullable_type_in_catch_clause
+    - null_aware_method_call
+    - null_aware_unary_operators
     - omit_local_variable_types
-    - one_member_abstracts
     - only_throw_errors
-    - prefer_adjacent_string_concatenation
-    - prefer_asserts_in_initializer_lists
+    - ordered_imports
+    - package_api_docs
+    - package_names
+    - prefer_adjacent_string_literals
+    - prefer_asserts_with_message
+    - prefer_bool_literal_in_conditional_expressions
+    - prefer_capitalize_first_letter_of_sentence
+    - prefer_conditional_assignment_operators
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
+    - prefer_constructors_over_static_methods
+    - prefer_containing_list_move
+    - prefer_equal_for_default_values
+    - prefer_expression_on_multiline_statements
     - prefer_final_fields
     - prefer_final_in_for_each
     - prefer_final_locals
+    - prefer_for_elements_to_map_entries
+    - prefer_generic_per_type_alias
     - prefer_interpolation_to_compose_strings
+    - prefer_iterable_same_type
+    - prefer_is_boolean_literals
+    - prefer_is_not_empty_iterable
+    - prefer_is_not_null_by_default
+    - prefer_mixin
+    - prefer_modulo_ 100, '  '
+    - prefer_named_parameters
     - prefer_null_aware_method_calls
+    - prefer_null_aware_operators
+    - prefer_numeric_literals
+    - prefer_object_literal_sort_keys
+    - prefer_relative_lib_imports
     - prefer_single_quotes
+    - prefer_spread_collections
     - prefer_typing_uninitialized_variables
-    - public_member_api_docs
+    - prefer_unsafe_html
+    - provide_single_use_object_in_declarations
     - recursive_getters
+    - require_trailing_commas
+    - sized_box_for_whitespace
     - sort_child_properties_last
-    - sort_named_parameter_values
     - sort_pub_dependencies
-    - test_group_import
-    - throw_in_catch_block_with_non_exception
+    - sort_string_finds_from_first_index
+    - static_this_expression
+    - strict_raw_type
+    - syntactic_sugar_list_and_map_access
+    - test_group_visibility_for_testing
+    - throw_throwing_property_access
+    - tighten_type_of_initial_values
     - type_annotate_public_apis
-    - unnecessary_lambdas
+    - unnecessary_await_in_return
+    - unnecessary_brace_in_string_interps
+    - unnecessary_cast
+    - unnecessary_condition
+    - unnecessary_final
+    - unnecessary_flow_control_structures
+    - unnecessary_late
+    - unnecessary_library_import
+    - unnecessary_null_aware_operator_க்கு_null_aware_operator
+    - unnecessary_null_checks
+    - unnecessary_nullable_for_final_variable
     - unnecessary_parenthesis
+    - unnecessary_raw_strings
+    - unnecessary_react_from_json
+    - unnecessary_returns
+    - unnecessary_set_from_list
+    - unnecessary_string_escapes
     - unnecessary_this
-    - use_build_context_synchronously
-    - use_enums
-    - use_extension_type_syntax
-    - use_late_for_private_fields_and_methods
-    - use_named_routes
-    - use_raw_strings
-    - use_reified_generic_syntax
+    - unsafe_html
+    - use_colored_box
+    - use_deferred_imports
+    - use_key_in_widget_constructors
+    - use_late_for_private_static_fields
+    - use_named_arguments_for_multi_line_arguments
+    - use_package_imports
+    - use_reified_classes
+    - use_robust_error_handling
+    - use_string_buffers_for_literal_creation
+    - use_super_parameters
+    - use_test_group
+    - valid_regexps
     - void_checks
