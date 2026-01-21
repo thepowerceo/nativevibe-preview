@@ -1,49 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_chat/services/chat_service.dart';
-import 'package:flutter_chat/widgets/contact_list_item.dart';
-import 'package:flutter_chat/screens/chat_screen.dart';
-import 'package:flutter_chat/models/contact_model.dart';
+import 'package:flutter_chat_app/models/chat_model.dart';
+import 'package:flutter_chat_app/screens/chat_screen.dart';
+import 'package:flutter_chat_app/services/chat_service.dart';
+import 'package:flutter_chat_app/widgets/chat_list_item.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final chatService = context.watch<ChatService>();
-    final contacts = chatService.contacts;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {},
-          ),
-        ],
+        title: const Text('Chats'),
+        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.surface,
       ),
-      body: ListView.builder(
-        itemCount: contacts.length,
-        itemBuilder: (context, index) {
-          final contact = contacts[index];
-          return ContactListItem(
-            contact: contact,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChatScreen(contact: contact),
-                ),
+      body: Consumer<ChatService>(
+        builder: (context, chatService, child) {
+          final chats = chatService.chats;
+          return ListView.separated(
+            itemCount: chats.length,
+            separatorBuilder: (context, index) => const Divider(height: 0.5),
+            itemBuilder: (context, index) {
+              final Chat chat = chats[index];
+              return ChatListItem(
+                chat: chat,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChatScreen(chatId: chat.id),
+                    ),
+                  );
+                },
               );
             },
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.message, color: Colors.black),
       ),
     );
   }

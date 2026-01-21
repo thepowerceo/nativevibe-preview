@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_chat/services/chat_service.dart';
-import 'package:flutter_chat/screens/home_screen.dart';
+import 'package:flutter_chat_app/screens/home_screen.dart';
+import 'package:flutter_chat_app/services/chat_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,37 +12,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const Color primaryColor = Color(0xFF00D9FF);
+    const primaryColor = Color(0xFF00D9FF);
 
     return ChangeNotifierProvider(
-      create: (_) => ChatService(),
+      create: (context) => ChatService(),
       child: MaterialApp(
         title: 'Flutter Chat',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark, // Default to dark theme
         theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primaryColor,
+            brightness: Brightness.light,
+          ),
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
             seedColor: primaryColor,
             brightness: Brightness.dark,
             primary: primaryColor,
-            secondary: primaryColor,
           ),
           useMaterial3: true,
-          brightness: Brightness.dark,
-          scaffoldBackgroundColor: const Color(0xFF121212),
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Color(0xFF1E1E1E),
-            elevation: 0,
-            centerTitle: true,
-          ),
-          cardTheme: CardTheme(
-            color: const Color(0xFF1E1E1E),
-            elevation: 1,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
         ),
         home: const HomeScreen(),
-        debugShowCheckedModeBanner: false,
       ),
     );
   }

@@ -1,13 +1,11 @@
 class Message {
   final String id;
-  final String contactId;
   final String text;
   final DateTime timestamp;
   final bool isSentByMe;
 
-  Message({
+  const Message({
     required this.id,
-    required this.contactId,
     required this.text,
     required this.timestamp,
     required this.isSentByMe,

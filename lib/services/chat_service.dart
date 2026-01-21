@@ -1,67 +1,65 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_chat/models/contact_model.dart';
-import 'package:flutter_chat/models/message_model.dart';
 import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter_chat_app/models/chat_model.dart';
+import 'package:flutter_chat_app/models/message_model.dart';
 
-class ChatService extends ChangeNotifier {
-  final List<Contact> _contacts = [
-    const Contact(id: '1', name: 'Alice', imageUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704d'),
-    const Contact(id: '2', name: 'Bob', imageUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704e'),
-    const Contact(id: '3', name: 'Charlie', imageUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704f'),
-    const Contact(id: '4', name: 'Diana', imageUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704a'),
+class ChatService with ChangeNotifier {
+  final List<Chat> _chats = [
+    Chat(
+      id: '1',
+      contactName: 'Alice',
+      contactAvatarUrl: 'https://i.pravatar.cc/150?u=alice',
+      messages: [
+        Message(id: 'm1', text: 'Hey, how are you?', timestamp: DateTime.now().subtract(const Duration(minutes: 5)), isSentByMe: false),
+        Message(id: 'm2', text: 'I am good, thanks! What about you?', timestamp: DateTime.now().subtract(const Duration(minutes: 4)), isSentByMe: true),
+      ],
+    ),
+    Chat(
+      id: '2',
+      contactName: 'Bob',
+      contactAvatarUrl: 'https://i.pravatar.cc/150?u=bob',
+      messages: [
+        Message(id: 'm3', text: 'See you tomorrow!', timestamp: DateTime.now().subtract(const Duration(hours: 1)), isSentByMe: false),
+      ],
+    ),
+    Chat(
+      id: '3',
+      contactName: 'Charlie',
+      contactAvatarUrl: 'https://i.pravatar.cc/150?u=charlie',
+      messages: [
+        Message(id: 'm4', text: 'That sounds like a plan.', timestamp: DateTime.now().subtract(const Duration(days: 1)), isSentByMe: true),
+      ],
+    ),
+     Chat(
+      id: '4',
+      contactName: 'Diana',
+      contactAvatarUrl: 'https://i.pravatar.cc/150?u=diana',
+      messages: [
+        Message(id: 'm5', text: 'Can you send me the file?', timestamp: DateTime.now().subtract(const Duration(days: 2)), isSentByMe: false),
+      ],
+    ),
   ];
 
-  final Map<String, List<Message>> _messages = {
-    '1': [
-      Message(id: 'm1', contactId: '1', text: 'Hey, how are you?', timestamp: DateTime.now().subtract(const Duration(minutes: 5)), isSentByMe: false),
-      Message(id: 'm2', contactId: '1', text: 'I am good, thanks! How about you?', timestamp: DateTime.now().subtract(const Duration(minutes: 4)), isSentByMe: true),
-      Message(id: 'm3', contactId: '1', text: 'Doing great! Wanna catch up later?', timestamp: DateTime.now().subtract(const Duration(minutes: 3)), isSentByMe: false),
-    ],
-    '2': [
-      Message(id: 'm4', contactId: '2', text: 'Did you see the new Flutter update?', timestamp: DateTime.now().subtract(const Duration(hours: 1)), isSentByMe: true),
-      Message(id: 'm5', contactId: '2', text: 'Oh yes, it looks amazing!', timestamp: DateTime.now().subtract(const Duration(minutes: 58)), isSentByMe: false),
-    ],
-    '3': [],
-    '4': [
-       Message(id: 'm6', contactId: '4', text: 'See you tomorrow!', timestamp: DateTime.now().subtract(const Duration(days: 1)), isSentByMe: false),
-    ],
-  };
+  List<Chat> get chats => _chats;
 
-  List<Contact> get contacts => _contacts;
-
-  List<Message> getMessagesForContact(String contactId) {
-    return _messages[contactId]?..sort((a, b) => b.timestamp.compareTo(a.timestamp)) ?? [];
+  Chat getChatById(String id) {
+    return _chats.firstWhere((chat) => chat.id == id);
   }
 
-  Message? getLastMessageForContact(String contactId) {
-    final contactMessages = getMessagesForContact(contactId);
-    return contactMessages.isNotEmpty ? contactMessages.first : null;
-  }
-
-  void sendMessage(String contactId, String text) {
-    if (text.trim().isEmpty) return;
-
-    final newMessage = Message(
-      id: 'm${Random().nextInt(1000)}',
-      contactId: contactId,
-      text: text,
-      timestamp: DateTime.now(),
-      isSentByMe: true,
-    );
-    _messages[contactId]?.add(newMessage);
-    notifyListeners();
-
-    // Simulate a reply
-    Future.delayed(const Duration(seconds: 2), () {
-      final reply = Message(
-        id: 'm${Random().nextInt(1000)}',
-        contactId: contactId,
-        text: 'Sounds good!',
+  void sendMessage(String chatId, String text) {
+    final chatIndex = _chats.indexWhere((chat) => chat.id == chatId);
+    if (chatIndex != -1) {
+      final newMessage = Message(
+        id: 'msg_${Random().nextInt(10000)}',
+        text: text,
         timestamp: DateTime.now(),
-        isSentByMe: false,
+        isSentByMe: true,
       );
-      _messages[contactId]?.add(reply);
+      _chats[chatIndex].messages.insert(0, newMessage);
+      // Move the chat with the new message to the top of the list
+      final updatedChat = _chats.removeAt(chatIndex);
+      _chats.insert(0, updatedChat);
       notifyListeners();
-    });
+    }
   }
 }

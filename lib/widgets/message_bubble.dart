@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat/models/message_model.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_chat_app/models/message_model.dart';
 
 class MessageBubble extends StatelessWidget {
   final Message message;
@@ -10,51 +9,38 @@ class MessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isSentByMe = message.isSentByMe;
+    final isMe = message.isSentByMe;
 
-    return Align(
-      alignment: isSentByMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.75,
-        ),
-        decoration: BoxDecoration(
-          color: isSentByMe
-              ? theme.colorScheme.primary
-              : theme.cardTheme.color,
-          borderRadius: BorderRadius.only(
-            topLeft: const Radius.circular(20),
-            topRight: const Radius.circular(20),
-            bottomLeft:
-                isSentByMe ? const Radius.circular(20) : const Radius.circular(0),
-            bottomRight:
-                isSentByMe ? const Radius.circular(0) : const Radius.circular(20),
+    return Row(
+      mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.7,
+          ),
+          decoration: BoxDecoration(
+            color: isMe
+                ? theme.colorScheme.primaryContainer
+                : theme.colorScheme.secondaryContainer,
+            borderRadius: BorderRadius.only(
+              topLeft: const Radius.circular(18),
+              topRight: const Radius.circular(18),
+              bottomLeft: isMe ? const Radius.circular(18) : const Radius.circular(4),
+              bottomRight: isMe ? const Radius.circular(4) : const Radius.circular(18),
+            ),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          margin: const EdgeInsets.symmetric(vertical: 4),
+          child: Text(
+            message.text,
+            style: theme.textTheme.bodyLarge?.copyWith(
+              color: isMe
+                  ? theme.colorScheme.onPrimaryContainer
+                  : theme.colorScheme.onSecondaryContainer,
+            ),
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              message.text,
-              style: TextStyle(
-                fontSize: 16,
-                color: isSentByMe ? Colors.black : Colors.white,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              DateFormat.jm().format(message.timestamp),
-              style: TextStyle(
-                fontSize: 10,
-                color: isSentByMe ? Colors.black54 : Colors.white54,
-              ),
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
