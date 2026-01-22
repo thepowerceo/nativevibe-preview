@@ -1,32 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:weather_app/providers/weather_provider.dart';
-import 'package:weather_app/screens/home_screen.dart';
-import 'package:weather_app/theme/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flextrack_pro/providers/workout_provider.dart';
+import 'package:flextrack_pro/screens/home_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => WorkoutProvider(),
+      child: const FlexTrackApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class FlexTrackApp extends StatelessWidget {
+  const FlexTrackApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => WeatherProvider(),
-      child: Consumer<WeatherProvider>(
-        builder: (context, weatherProvider, child) {
-          return MaterialApp(
-            title: 'WeatherApp',
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: weatherProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-            home: const HomeScreen(),
-            debugShowCheckedModeBanner: false,
-          );
-        },
+    final Color primaryCyan = const Color(0xFF00D9FF);
+
+    return MaterialApp(
+      title: 'FlexTrack Pro',
+      debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.system,
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryCyan,
+          primary: primaryCyan,
+          brightness: Brightness.light,
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(),
       ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: primaryCyan,
+          primary: primaryCyan,
+          brightness: Brightness.dark,
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+      ),
+      home: const HomeScreen(),
     );
   }
 }

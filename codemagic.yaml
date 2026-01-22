@@ -12,7 +12,7 @@ workflows:
     
     environment:
       flutter: 3.24.0
-      xcode: 15.4
+      xcode: 16.2
       cocoapods: default
       vars:
         # Enable Gradle build cache and parallel execution

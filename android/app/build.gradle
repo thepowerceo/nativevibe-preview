@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.nativevibe.weatherapp"
+    namespace = "com.nativevibe.flextrack_pro"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,9 +19,9 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.nativevibe.weatherapp"
-        minSdk = 21
-        targetSdk = 34
+        applicationId = "com.nativevibe.flextrack_pro"
+        minSdk = undefined
+        targetSdk = undefined
         versionCode = 1
         versionName = "1.0.0"
     }

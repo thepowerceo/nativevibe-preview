@@ -1,4 +1,4 @@
-package com.nativevibe.weatherapp
+package com.nativevibe.flextrack_pro
 
 import io.flutter.embedding.android.FlutterActivity
 
