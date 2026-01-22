@@ -8,11 +8,11 @@ workflows:
     labels:
       - native-vibe
     max_build_duration: 60
-    instance_type: linux
+    instance_type: mac_mini_m1
     
     environment:
       flutter: 3.24.0
-      xcode: latest
+      xcode: 15.4
       cocoapods: default
       vars:
         # Enable Gradle build cache and parallel execution
@@ -36,7 +36,13 @@ workflows:
         - $FCI_BUILD_DIR/android/app/build/intermediates
         - $FCI_BUILD_DIR/android/app/build/generated
         
-
+        # iOS caches - CocoaPods and Xcode derived data
+        - $HOME/Library/Caches/CocoaPods
+        - $HOME/.cocoapods/repos
+        - $FCI_BUILD_DIR/ios/Pods
+        - $FCI_BUILD_DIR/ios/.symlinks
+        - $FCI_BUILD_DIR/ios/Flutter/ephemeral
+        - $HOME/Library/Developer/Xcode/DerivedData
 
     triggering:
       events:
@@ -135,5 +141,42 @@ workflows:
           flutter build apk --release
           echo "Build complete - artifacts will be cached for next build"
 
+      - name: Pre-warm iOS build cache
+        script: |
+          echo "Checking for cached CocoaPods..."
+          if [ -d "$HOME/Library/Caches/CocoaPods" ]; then
+            echo "CocoaPods cache found"
+            du -sh $HOME/Library/Caches/CocoaPods 2>/dev/null || true
+          fi
+          if [ -d "$HOME/Library/Developer/Xcode/DerivedData" ]; then
+            echo "Xcode DerivedData cache found"
+            du -sh $HOME/Library/Developer/Xcode/DerivedData 2>/dev/null || true
+          fi
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios
+          # Use cached pods if available
+          if [ -f "Podfile.lock" ]; then
+            echo "Podfile.lock found - checking for cached pods..."
+            pod install --deployment || pod install || pod install --repo-update
+          else
+            echo "Fresh pod install..."
+            pod install || pod install --repo-update
+          fi
+          echo "CocoaPods ready - dependencies cached for next build"
+          
+      - name: Build iOS (unsigned)
+        script: |
+          echo "Building iOS with caching enabled..."
+          flutter build ios --release --no-codesign
+          cd build/ios/iphoneos
+          mkdir -p Payload
+          cp -r Runner.app Payload/
+          zip -r ../../../ios-build-unsigned.ipa Payload
+          echo "iOS build complete - derived data cached for next build"
+
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
+      - ios-build-unsigned.ipa
+      - /tmp/xcodebuild_logs/*.log
