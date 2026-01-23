@@ -17,9 +17,14 @@ jobs:
           channel: stable
           cache: true
 
-      - run: flutter pub get
+      - name: Install dependencies
+        run: flutter pub get
 
-      - run: flutter build web --release --base-href /
+      - name: Ensure web platform files exist
+        run: flutter create . --platforms web
+
+      - name: Build Flutter Web
+        run: flutter build web --release --base-href /
         env:
           PREVIEW: "true"
 
