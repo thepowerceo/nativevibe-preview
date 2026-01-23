@@ -19,9 +19,16 @@ jobs:
 
       - run: flutter pub get
 
-      - run: flutter build web --release
+      - run: flutter build web --release --base-href ./
         env:
           PREVIEW: "true"
+
+      - name: Allow embedding in iframe (CSP)
+        run: |
+          cat > build/web/_headers << 'EOF'
+          /*
+            Content-Security-Policy: frame-ancestors 'self' https://nativevibe.dev https://preview--nativevibe.lovable.app
+          EOF
 
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
